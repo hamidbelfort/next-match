@@ -1,20 +1,35 @@
+import { auth, signOut } from "@/auth";
 import { Button } from "@nextui-org/react";
-import Link from "next/link";
 import { FaRegSmile } from "react-icons/fa";
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth();
   return (
     <div className="flex flex-col justify-center items-center gap-4">
+      <h1 className="text-3xl font-semibold">User Session Data:</h1>
+      {session ? (
+        <div>
+          <pre>{JSON.stringify(session, null, 2)}</pre>
+          <form
+            action={async () => {
+              "use server";
+              await signOut();
+            }}
+          >
+            <Button
+              type="submit"
+              color="primary"
+              variant="bordered"
+              startContent={<FaRegSmile size={20} />}
+            >
+              Sign Out
+            </Button>
+          </form>
+        </div>
+      ) : (
+        <div>Not Sign In</div>
+      )}
       <h1 className="text-3xl">Hello app</h1>
-      <Button
-        as={Link}
-        href="/members"
-        color="primary"
-        variant="bordered"
-        startContent={<FaRegSmile size={20} />}
-      >
-        Click me
-      </Button>
     </div>
   );
 }
